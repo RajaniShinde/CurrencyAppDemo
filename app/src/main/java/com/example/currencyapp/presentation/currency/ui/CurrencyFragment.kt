@@ -36,6 +36,7 @@ class CurrencyFragment : BaseFragment() {
     private var selectedToCurrencyPosition = 1
     private var selectedFromCurrencyPosition = 0
 
+
     companion object{
         fun getInstance(): CurrencyFragment{
             return CurrencyFragment()
