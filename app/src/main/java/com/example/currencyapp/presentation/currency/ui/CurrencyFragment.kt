@@ -13,12 +13,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.currencyapp.R
 import com.example.currencyapp.data.currency.model.CurrencyData
 import com.example.currencyapp.databinding.FragmentCurrencyLayoutBinding
 import com.example.currencyapp.framework.ui.BaseFragment
 import com.example.currencyapp.presentation.currency.viewmodel.CurrencyViewModel
-import com.example.currencyapp.presentation.currencydetail.ui.CurrencyDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_currency_layout.*
 import java.lang.Exception
@@ -37,18 +37,12 @@ class CurrencyFragment : BaseFragment() {
     private var selectedFromCurrencyPosition = 0
 
 
-    companion object{
-        fun getInstance(): CurrencyFragment{
-            return CurrencyFragment()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //Here will do databinding
+        //Here will do data binding
         return viewBinding(
             R.layout.fragment_currency_layout, inflater,container,
             FragmentCurrencyLayoutBinding::class.java).apply {
@@ -69,6 +63,7 @@ class CurrencyFragment : BaseFragment() {
         currencyViewModel.getCurrencyData("USD")
         etFromCurrency.setText("1")
 
+        // Adding data to From Currency Spinner
         ArrayAdapter(this@CurrencyFragment.requireContext(), android.R.layout.simple_spinner_item, currencyList).also { fromCurrencyArrayAdapter = it }
         fromCurrencyArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spFromCurrency.adapter = fromCurrencyArrayAdapter
@@ -91,6 +86,7 @@ class CurrencyFragment : BaseFragment() {
         spToCurrency.setSelection(1)
         spToCurrency.adapter = toCurrencyArrayAdapter
 
+        // Handle click event of To Currency Spinner
         spToCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -137,7 +133,8 @@ class CurrencyFragment : BaseFragment() {
         }
 
         btnDetails.setOnClickListener {
-            screenNavigator.navigateToDetailScreen(spFromCurrency.selectedItem.toString(),spToCurrency.selectedItem.toString())
+            val directions = CurrencyFragmentDirections.actionCurrencyFragment2ToCurrencyDetailFragment2( spFromCurrency.selectedItem.toString(),  spToCurrency.selectedItem.toString())
+            findNavController().navigate(directions)
 
         }
     }
@@ -154,10 +151,12 @@ class CurrencyFragment : BaseFragment() {
     @SuppressLint("SetTextI18n")
     private fun getResponse() {
 
+        //It will display if any error response from api call
         currencyViewModel.onErrorLD.observe(viewLifecycleOwner){
             Toast.makeText(this@CurrencyFragment.requireContext(),getErrorMessage(it),Toast.LENGTH_SHORT).show()
         }
 
+        //Here will get success response of API call and will do required actions on that response
         currencyViewModel.onGetCurrencySuccessLD.observe(viewLifecycleOwner){ it ->
 
             it?.rates?.entries?.map {
@@ -168,12 +167,13 @@ class CurrencyFragment : BaseFragment() {
             with(toCurrencyArrayAdapter) { notifyDataSetChanged() }
             spFromCurrency.setSelection(selectedFromCurrencyPosition)
             spToCurrency.setSelection(selectedToCurrencyPosition)
-            getRatesforSelected()
+            getRatesSelected()
         }
     }
 
+    /*We can calculate rate for respected currency*/
     @SuppressLint("LogNotTimber", "LogConditional")
-    private fun getRatesforSelected() {
+    private fun getRatesSelected() {
         try {
             if(etFromCurrency.text != null || !etFromCurrency.text.equals( "0")) {
                 etFromCurrency.error = null

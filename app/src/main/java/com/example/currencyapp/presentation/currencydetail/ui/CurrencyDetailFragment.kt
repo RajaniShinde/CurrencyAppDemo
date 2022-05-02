@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.currencyapp.R
@@ -30,6 +31,8 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class CurrencyDetailFragment : BaseFragment() {
+    private val safeArgs: CurrencyDetailFragmentArgs by navArgs()
+
     private val currencyViewModel: CurrencyDetailViewModel by viewModels()
     private var fromCurrency:String =""
     private var toCurrency : String = ""
@@ -37,18 +40,12 @@ class CurrencyDetailFragment : BaseFragment() {
     private lateinit var adapter: HistoricalCurrencyAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
-    companion object {
-        fun getInstance(): CurrencyDetailFragment {
-            return CurrencyDetailFragment()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //Here will do databinding
+        //Here will do data binding
         return viewBinding(
             R.layout.fragment_history_layout, inflater, container,
             FragmentHistoryLayoutBinding::class.java
@@ -66,11 +63,11 @@ class CurrencyDetailFragment : BaseFragment() {
     }
 
 
+    //Here will do all UI setup related code
     private fun setupUI() {
 
-        val bundle = arguments
-        fromCurrency = bundle?.getString("fromCurrency").toString()
-        toCurrency = bundle?.getString("toCurrency").toString()
+        fromCurrency = safeArgs.arg1
+        toCurrency = safeArgs.arg2
 
 //      currencyViewModel.getHistoricalCurrencyData("USD",DateUtils.getStartDate(), DateUtils.getEndDate())
         currencyViewModel.getHistoricalCurrencyData("USD","2020-01-01", "2020-01-04")
@@ -95,10 +92,12 @@ class CurrencyDetailFragment : BaseFragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun getResponse() {
+        //It will parse error response from the API
         currencyViewModel.onErrorLD.observe(viewLifecycleOwner){
             Toast.makeText(this@CurrencyDetailFragment.requireContext(),getErrorMessage(it), Toast.LENGTH_SHORT).show()
         }
-  
+
+        //It will give you success response from the API
         currencyViewModel.onSuccessLD.observe(viewLifecycleOwner){
             val response = it?.rates?.toSortedMap()
             Timber.tag("XAxisValueFormatter").d( "getHistoricalRates: {${toCurrency}} + ${response?.values} ? ")
@@ -135,6 +134,7 @@ class CurrencyDetailFragment : BaseFragment() {
         }
     }
 
+    //This method is used to display chart using response
     private fun setLineChart(dates: List<String>, listOfRates: ArrayList<Entry>) {
         lineChart.isDragEnabled = true
         lineChart.setScaleEnabled(false)

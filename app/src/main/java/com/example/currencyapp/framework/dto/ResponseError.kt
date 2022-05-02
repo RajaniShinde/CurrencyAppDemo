@@ -8,7 +8,4 @@ class ResponseError {
         return message?: ""
     }
 
-    fun setMessage(message: String){
-        this.message = message
-    }
 }

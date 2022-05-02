@@ -6,7 +6,7 @@ import com.example.currencyapp.domain.currecnydetails.mapper.HistoricalCurrencyR
 import com.example.currencyapp.domain.currecnydetails.repository.HistoricalDataRepository
 import com.example.currencyapp.domain.currecnydetails.usecase.HistoricalCurrencyUseCase
 import com.example.currencyapp.domain.currecnydetails.usecase.OtherCurrencyUseCase
-import com.example.currencyapp.domain.currency.mapper.CurrecnyListResponseToResultMapper
+import com.example.currencyapp.domain.currency.mapper.CurrencyListResponseToResultMapper
 import com.example.currencyapp.domain.currency.repository.ConvertCurrencyRepository
 import com.example.currencyapp.domain.currency.usecase.CurrencyListUseCase
 import com.example.currencyapp.framework.network.HttpApiInf
@@ -18,7 +18,7 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class CurrecnyUseCaseModule {
+class CurrencyUseCaseModule {
 
     @Provides
     fun providesCurrencyRepository(httpApiInf: HttpApiInf): ConvertCurrencyRepository{
@@ -44,14 +44,14 @@ class CurrecnyUseCaseModule {
     }
 
     @Provides
-    fun providesGetCurrencyResponseToMapper():CurrecnyListResponseToResultMapper{
-        return CurrecnyListResponseToResultMapper()
+    fun providesGetCurrencyResponseToMapper():CurrencyListResponseToResultMapper{
+        return CurrencyListResponseToResultMapper()
     }
 
     @Provides
     fun provideListCurrencyUseCase(
         convertCurrencyRepository:ConvertCurrencyRepository,
-        responseToDomain: CurrecnyListResponseToResultMapper
+        responseToDomain: CurrencyListResponseToResultMapper
     ) : CurrencyListUseCase{
         return CurrencyListUseCase(convertCurrencyRepository,responseToDomain)
     }
@@ -59,7 +59,7 @@ class CurrecnyUseCaseModule {
     @Provides
     fun provideListOtherCurrencyUseCase(
         convertCurrencyRepository:HistoricalDataRepository,
-        responseToDomain: CurrecnyListResponseToResultMapper
+        responseToDomain: CurrencyListResponseToResultMapper
     ) : OtherCurrencyUseCase{
         return OtherCurrencyUseCase(convertCurrencyRepository,responseToDomain)
     }

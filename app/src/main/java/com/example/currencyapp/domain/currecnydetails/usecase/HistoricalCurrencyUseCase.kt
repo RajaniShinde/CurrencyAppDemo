@@ -17,13 +17,13 @@ class HistoricalCurrencyUseCase  @Inject constructor(
 ): UseCase() {
 
     fun getHistoricalCurrencyData(
-        baseCurrecny: String,
+        baseCurrency: String,
         start_date: String,
         end_date: String,
         coroutineScope: CoroutineScope
     ): Outcome<OperationResult<HistoricalResult>> {
         return executeSuspend(
-            HistoricalRequest(baseCurrecny,start_date,end_date),
+            HistoricalRequest(baseCurrency,start_date,end_date),
             ::getCurrencyDataRequest,
             coroutineScope
         )

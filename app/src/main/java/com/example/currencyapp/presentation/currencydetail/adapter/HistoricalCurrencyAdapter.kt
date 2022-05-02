@@ -26,7 +26,7 @@ class HistoricalCurrencyAdapter : ListAdapter<Pair<String, Double>, RecyclerView
     }
 
 
-    class RatesViewHolder(var binding: HistoryListItemBinding) : RecyclerView.ViewHolder(binding.root){
+    class RatesViewHolder(private var binding: HistoryListItemBinding) : RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bind(currentRate: Pair<String, Double>) {
             val currencyName = currentRate.first

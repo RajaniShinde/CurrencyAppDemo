@@ -51,11 +51,11 @@ class HttpApiImpl @Inject constructor(
 
     private fun<RQ : BaseRequest, RS> makeRetrofitRequest(
         rq: RQ,
-        retrofitRequestfun : (rq:RQ) -> Response<RS>,
+        retrofitRequest : (rq:RQ) -> Response<RS>,
         handleError:(Response<RS>) -> OperationResult.ErrorOperationResult): OperationResult<RS>
     {
           return try {
-              val response = retrofitRequestfun(rq)
+              val response = retrofitRequest(rq)
               if (response.isSuccessful) {
                   response.body()?.let {
                       return OperationResult.SuccessOperationResult(it)

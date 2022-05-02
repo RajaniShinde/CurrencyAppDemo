@@ -12,15 +12,12 @@ import com.example.currencyapp.framework.dto.Error
 import com.example.currencyapp.framework.errorhandler.ErrorDetails
 
 abstract class BaseFragment : Fragment() {
-
     private lateinit var ctx: Context
     lateinit var appCompactActivity : AppCompatActivity
-    protected lateinit var screenNavigator: ScreenNavigator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         this.ctx = context
-        screenNavigator = ScreenNavigator(requireActivity(),this.parentFragmentManager)
         if(context is AppCompatActivity){
             this.appCompactActivity = context
         }

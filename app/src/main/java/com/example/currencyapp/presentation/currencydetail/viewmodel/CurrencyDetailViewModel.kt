@@ -44,11 +44,11 @@ class CurrencyDetailViewModel  @Inject constructor(
 
 
     fun getHistoricalCurrencyData(
-        baseCurrecny: String,
+        baseCurrency: String,
         startDate: String,
         endDate : String,
     ){
-        val output = historicalCurrencyUseCase.getHistoricalCurrencyData(baseCurrecny,startDate, endDate, viewModelScope)
+        val output = historicalCurrencyUseCase.getHistoricalCurrencyData(baseCurrency,startDate, endDate, viewModelScope)
         viewModelScope.launch {
             output.mutableStateFlow.collect {
                 it.performAction(

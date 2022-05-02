@@ -14,7 +14,7 @@ import kotlin.reflect.KSuspendFunction1
 open class CoroutineManger {
 
     interface PerformTask<T>{
-        fun performInBackgorund()
+        fun performInBackground()
         fun performInForeground(op : OperationResult<T>)
     }
 
@@ -24,7 +24,7 @@ open class CoroutineManger {
     ):Outcome<OperationResult<T>>{
         val outCome = Outcome<OperationResult<T>>(MutableStateFlow(OperationResult.Loading()))
         val performtask = object : PerformTask<T>{
-            override fun performInBackgorund() {
+            override fun performInBackground() {
                coroutineScope.launch (Dispatchers.Main){
                    val result = async(Dispatchers.IO) { runInBackGround()}
                    performInForeground(result.await())
@@ -36,7 +36,7 @@ open class CoroutineManger {
             }
 
         }
-        performtask.performInBackgorund()
+        performtask.performInBackground()
         return outCome
     }
 
@@ -47,7 +47,7 @@ open class CoroutineManger {
     ):Outcome<OperationResult<T>>{
         val outCome = Outcome<OperationResult<T>>(MutableStateFlow(OperationResult.Loading()))
         val performtask = object : PerformTask<T>{
-            override fun performInBackgorund() {
+            override fun performInBackground() {
                 coroutineScope.launch (Dispatchers.Main){
                     val result = async(Dispatchers.IO) { runInBgFun(b)}
                     performInForeground(result.await())
@@ -59,7 +59,7 @@ open class CoroutineManger {
             }
 
         }
-        performtask.performInBackgorund()
+        performtask.performInBackground()
         return outCome
     }
 
